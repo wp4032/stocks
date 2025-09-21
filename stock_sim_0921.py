@@ -11,14 +11,16 @@ def calculate_cagr(ticker, years):
         data = yf.download(ticker, start=start_date, end=end_date, progress=False, auto_adjust=True)
         if data.empty:
             return np.nan
-        start_price = data['Adj Close'].iloc[0]
-        end_price = data['Adj Close'].iloc[-1]
+        start_price = data['Close'].iloc[2].to_list()[0]
+        end_price = data['Close'].iloc[-1].to_list()[0]
+
         actual_years = (end_date - start_date).days / 365.25
         if start_price <= 0 or actual_years <= 0:
             return np.nan
         cagr = (end_price / start_price) ** (1 / actual_years) - 1
         return cagr
-    except Exception:
+    except Exception as e:
+        print(f"Error calculating CAGR for {ticker}: {e}")
         return np.nan
 
 # Function to fetch data for a single ticker
@@ -70,10 +72,6 @@ def fetch_stock_data(ticker):
             total_debt = balance_sheet.loc['Total Debt'].iloc[0] if 'Total Debt' in balance_sheet.index else np.nan
             total_equity = balance_sheet.loc['Stockholders Equity'].iloc[0] if 'Stockholders Equity' in balance_sheet.index else np.nan
             data['Debt_Equity'] = total_debt / total_equity if not np.isnan(total_debt) and total_equity != 0 else np.nan
-            
-            # Write the whole balance sheet to a file named [ticker].txt
-            with open(f"{ticker}.txt", "w") as file:
-                file.write(balance_sheet.to_string())
         else:
             data['ROCE'] = np.nan
             data['Debt_Equity'] = np.nan
@@ -109,8 +107,11 @@ def main():
         df[col] = df[col].apply(lambda x: f"{x:.2f}" if not np.isnan(x) else 'N/A')
     
     # Save to CSV
-    output_path = 'stock_factors_comparison.csv'
-    df.to_csv(output_path, index=False)
+    from datetime import datetime
+
+    current_date = datetime.now().strftime("%Y%m%d")
+    output_path = f'stock_analysis_comparison_{current_date}.xlsx'
+    df.to_excel(output_path, index=False)
     print(f"Data saved to {output_path}")
 
 if __name__ == "__main__":
