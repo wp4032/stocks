@@ -241,6 +241,7 @@ def main():
     
     # Replace np.nan with None for Excel compatibility
     df = df.fillna(np.nan).replace(np.nan, None)
+    df.sort_values(by='CAGR_Compound', ascending=False, inplace=True)
     
     # Save to Excel
     current_date = datetime.now().strftime("%Y%m%d")
@@ -276,7 +277,7 @@ def main():
     
     for col in float_columns:
         col_idx = df.columns.get_loc(col)
-        worksheet.set_column(col_idx, col_idx, None, float_format)
+
     
     # Save the file
     writer._save()
