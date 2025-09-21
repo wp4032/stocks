@@ -210,6 +210,18 @@ def fetch_stock_data(ticker):
         data['Debt_Equity_3Y'] * 0.3 + 
         data['Debt_Equity_1Y'] * 0.5
     ) if not any(np.isnan([data['Debt_Equity_5Y'], data['Debt_Equity_3Y'], data['Debt_Equity_1Y']])) else np.nan
+
+    data['Growth Quality Score'] = (
+        data['CAGR_Compound'] * 0.4 +
+        data['ROCE_5Y'] * 0.3 +
+        data['Operating_Margin'] * 0.2 +
+        data['Gross_Margin'] * 0.1
+    ) if not any(np.isnan([data['CAGR_Compound'], data['ROCE_5Y'], data['Operating_Margin'], data['Gross_Margin']])) else np.nan
+
+    if data['Debt_Equity'] > 1:
+        data['Growth Quality Score'] -= 0.05
+    if data['Beta'] > 1.5:
+        data['Growth Quality Score'] -= 0.05
     
     return data
 
@@ -236,7 +248,8 @@ def main():
         'Gross_Margin', 'Operating_Margin', 'Net_Margin',
         'COGS_Margin_5Y', 'COGS_Margin_3Y', 'COGS_Margin_1Y', 'COGS_Margin_Compound',
         'Debt_Equity', 'Debt_Equity_5Y', 'Debt_Equity_3Y', 'Debt_Equity_1Y', 'Debt_Equity_Compound',
-        'Beta', 'Beta_5Y', 'Beta_3Y', 'Beta_1Y', 'Beta_Compound'
+        'Beta', 'Beta_5Y', 'Beta_3Y', 'Beta_1Y', 'Beta_Compound',
+        'Growth Quality Score'
     ]]
     
     # Replace np.nan with None for Excel compatibility
@@ -264,7 +277,8 @@ def main():
         'CAGR_10Y', 'CAGR_5Y', 'CAGR_3Y', 'CAGR_1Y', 'CAGR_Compound',
         'ROCE', 'ROCE_5Y', 'ROCE_3Y', 'ROCE_1Y', 'ROCE_Compound',
         'Gross_Margin', 'Operating_Margin', 'Net_Margin',
-        'COGS_Margin_5Y', 'COGS_Margin_3Y', 'COGS_Margin_1Y', 'COGS_Margin_Compound'
+        'COGS_Margin_5Y', 'COGS_Margin_3Y', 'COGS_Margin_1Y', 'COGS_Margin_Compound',
+        'Growth Quality Score'
     ]
     float_columns = [
         'Debt_Equity', 'Debt_Equity_5Y', 'Debt_Equity_3Y', 'Debt_Equity_1Y', 'Debt_Equity_Compound',
