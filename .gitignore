@@ -1,3 +1,5 @@
 archive/
 *.txt
 *.csv
+~*.xlsx
+stock_analysis_comparison_*.xlsx
