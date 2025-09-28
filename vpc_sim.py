@@ -8,6 +8,7 @@ def vpc_screen(stocks, period="3mo", window=20):
 
     for ticker in stocks:
         try:
+            print(f"Fetching data for {ticker}...")
             # Download OHLCV data
             df = yf.download(ticker, period=period, interval="1d", progress=False, auto_adjust=True)
             if df.empty:
@@ -44,7 +45,7 @@ def vpc_screen(stocks, period="3mo", window=20):
     return pd.DataFrame(results)
 
 # Example usage:
-my_stocks = ["NVDA", "TSM", "STRL", "FIX", "META", "ANET"]
+my_stocks = pd.read_excel('all_tickers_2025.xlsx')['Ticker'].tolist()
 df = vpc_screen(my_stocks)
 
 # Save to Excel
